@@ -7,7 +7,7 @@ language: objective-c
 # podfile: Example/Podfile
 before_install:
 - gem install cocoapods # Since Travis is not always on latest version
-- cd Example && pod install --project-directory=Example/HPKDateFormatter.xcodeproj
+- cd Example && pod install --project-directory=HPKDateFormatter.xcodeproj
 install:
 - gem install xcpretty --no-rdoc --no-ri --no-document --quiet
 script:
