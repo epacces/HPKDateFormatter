@@ -10,19 +10,18 @@
 Pod::Spec.new do |s|
   s.name             = "HPKDateFormatter"
   s.version          = "0.1.0"
-  s.summary          = "A short description of HPKDateFormatter."
+  s.summary          = "An high perfomance, thread safe, efficient date formatter"
   s.description      = <<-DESC
-                       An optional longer description of HPKDateFormatter
-
-                       * Markdown format.
-                       * Don't worry about the indent, we strip it!
+			The basic implementation wraps `NSDateFormatter` and avoid contiuous 
+			allocations of expensive objects, a faster implementation is based 
+			on an high performance C routine
                        DESC
-  s.homepage         = "https://github.com/<GITHUB_USERNAME>/HPKDateFormatter"
+  s.homepage         = "https://github.com/epacces/HPKDateFormatter"
   # s.screenshots     = "www.example.com/screenshots_1", "www.example.com/screenshots_2"
   s.license          = 'MIT'
   s.author           = { "Eriprando Pacces" => "eriprando.pacces@gmail.com" }
-  s.source           = { :git => "https://github.com/<GITHUB_USERNAME>/HPKDateFormatter.git", :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
+  s.source           = { :git => "https://github.com/epacces/HPKDateFormatter.git", :tag => s.version.to_s }
+#  s.social_media_url = 'https://twitter.com/epacces'
 
   s.platform     = :ios, '7.0'
   s.requires_arc = true
