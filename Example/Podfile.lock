@@ -1,0 +1,17 @@
+PODS:
+  - HPKDateFormatter (0.1.0)
+  - Kiwi (2.3.1)
+
+DEPENDENCIES:
+  - HPKDateFormatter (from `../`)
+  - Kiwi
+
+EXTERNAL SOURCES:
+  HPKDateFormatter:
+    :path: ../
+
+SPEC CHECKSUMS:
+  HPKDateFormatter: a237695a2d13addf19b599e758330c7b1c4be59b
+  Kiwi: 73e1400209055ee9c8ba78c6012b6b642d0fb9f7
+
+COCOAPODS: 0.34.4
