@@ -34,16 +34,13 @@ static NSMutableDictionary const *_sharedInstances;
 
 - (void)precacheLocales
 {
-    static dispatch_once_t onceToken;
-    static NSMutableDictionary *precachedLocaleDictionary;
+    NSMutableDictionary *precachedLocaleDictionary;
     
-    dispatch_once(&onceToken, ^{
-        NSArray *localesIdentifier = @[@"en_US", @"it_IT"];
-        precachedLocaleDictionary = [[NSMutableDictionary alloc] initWithCapacity:localesIdentifier.count];
-        [localesIdentifier enumerateObjectsUsingBlock:^(NSString *localeIdentifier, NSUInteger index, BOOL *stop) {
-            precachedLocaleDictionary[localeIdentifier] = [NSLocale localeWithLocaleIdentifier:localeIdentifier];
-        }];
-    });
+    NSArray *localesIdentifier = @[@"en_US", @"it_IT"];
+    precachedLocaleDictionary = [[NSMutableDictionary alloc] initWithCapacity:localesIdentifier.count];
+    [localesIdentifier enumerateObjectsUsingBlock:^(NSString *localeIdentifier, NSUInteger index, BOOL *stop) {
+        precachedLocaleDictionary[localeIdentifier] = [NSLocale localeWithLocaleIdentifier:localeIdentifier];
+    }];
     
     [self.localeDictionary addEntriesFromDictionary:precachedLocaleDictionary];
 }

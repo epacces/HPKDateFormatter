@@ -119,27 +119,7 @@ describe(@"Date formatter", ^{
             });
         });
         
-        context(@"multi thread", ^{
         
-            it(@"should contain 2 precached locales", ^{
-                dispatch_async(firstBackgroundQueue, ^{
-                    firstBackgroundDateFormatter = [HKPDateFormatter sharedInstance];
-                    [[HKPDateFormatter sharedInstance] stringFromDate:now withDateFormat: @"HH:mm:ss"
-                                                     localeIdentifier:@"en_US"];
-                    [[theValue(firstBackgroundDateFormatter.localeDictionary) should] haveCountOf:2];
-                });
-            });
-            
-            it(@"should contain 3 precached locales", ^{
-                dispatch_async(firstBackgroundQueue, ^{
-                [[HKPDateFormatter sharedInstance] stringFromDate:[NSDate date] withDateFormat: @"HH:mm:ss"
-                                                 localeIdentifier:@"en_GB"];
-                [[theValue(firstBackgroundDateFormatter.localeDictionary) should] haveCountOf:3];
-                });
-                
-            });
-            
-        });
     });
     
     
