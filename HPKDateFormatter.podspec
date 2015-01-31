@@ -12,7 +12,9 @@ Pod::Spec.new do |s|
   s.version          = "0.1.0"
   s.summary          = "An high perfomance, thread safe, efficient date formatter"
   s.description      = <<-DESC
-
+			The basic implementation wraps `NSDateFormatter` and avoid contiuous 
+			allocations of expensive objects, a faster implementation is based 
+			on an high performance C routine
                        DESC
   s.homepage         = "https://github.com/epacces/HPKDateFormatter"
   # s.screenshots     = "www.example.com/screenshots_1", "www.example.com/screenshots_2"
