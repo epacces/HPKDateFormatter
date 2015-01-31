@@ -21,7 +21,7 @@ Pod::Spec.new do |s|
   s.license          = 'MIT'
   s.author           = { "Eriprando Pacces" => "eriprando.pacces@gmail.com" }
   s.source           = { :git => "https://github.com/epacces/HPKDateFormatter.git", :tag => s.version.to_s }
-  s.social_media_url = 'https://twitter.com/epacces'
+#  s.social_media_url = 'https://twitter.com/epacces'
 
   s.platform     = :ios, '7.0'
   s.requires_arc = true
