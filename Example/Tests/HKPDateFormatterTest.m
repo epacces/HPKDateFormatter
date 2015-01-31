@@ -18,7 +18,6 @@ SPEC_BEGIN(HKPDateFormatterTest)
 describe(@"Date formatter", ^{
     
     HKPDateFormatter __block *mainDateFormatter;
-    HKPDateFormatter __block *firstBackgroundDateFormatter;
     HKPDateFormatter __block *secondBackgroundDateFormatter;
     
     dispatch_queue_t __block firstBackgroundQueue, secondBackgroundQueue;
