@@ -1,0 +1,8 @@
+source 'https://github.com/CocoaPods/Specs.git'
+
+
+target 'HPKDateFormatter', :exclusive => true do
+  pod "HPKDateFormatter", :path => "../"
+
+  pod 'Kiwi'
+end
