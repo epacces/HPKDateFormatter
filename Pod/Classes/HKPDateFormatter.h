@@ -14,7 +14,7 @@ typedef NS_ENUM(NSInteger, HKPDFRelativeDayFormatType) {
 /**
  @brief The singleton instance
  
- @returns Singleton instance of CTXDateFormatter
+ @returns Singleton instance of HPKDateFormatter
  @note it returns a singleton per thread, i.e., each thread has its private singleton which is not shared amongst threads
  */
 + (HKPDateFormatter *)sharedInstance;
@@ -38,8 +38,8 @@ typedef NS_ENUM(NSInteger, HKPDFRelativeDayFormatType) {
  @param dateFormat The input date formatting string.
  @param dayFormatType One of:
  
- - CTXDFRelativeDayShortType
- - CTXDFRelativeDayLongType
+ - HPKDFRelativeDayShortType
+ - HPKDFRelativeDayLongType
  
  @param localeIdentifier The locale to use when parsing date
  @param uppercaseRelativeDay Returns uppercase string
