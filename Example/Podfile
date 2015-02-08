@@ -4,3 +4,16 @@ platform :ios, "5.0"
 
 pod "HPKDateFormatter", :path => "../"
 pod 'Kiwi'
+
+post_install do |installer|
+    installer.project.targets.each do |target| 
+        if target.name == "Pods-HPKDateFormatter" 
+            target.build_configurations.each do |config|
+                if config.name == "Debug"
+                    config.build_settings["GCC_GENERATE_TEST_COVERAGE_FILES"] = "YES"
+                    config.build_settings["GCC_INSTRUMENT_PROGRAM_FLOW_ARCS"] = "YES"
+                end
+            end
+        end 
+    end
+end
