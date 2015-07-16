@@ -6,5 +6,6 @@
 @property (nonatomic, strong, readonly) NSMutableDictionary *localeDictionary;
 
 + (NSDictionary *)sharedInstances;
++ (instancetype)sharedInstance;
 
 @end

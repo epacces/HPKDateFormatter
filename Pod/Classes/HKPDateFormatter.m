@@ -60,40 +60,106 @@ static NSMutableDictionary const *_sharedInstances;
 
 #pragma mark - Public methods
 
-- (NSString *)stringFromDate:(NSDate *)date withDateFormat:(NSString *)dateFormat localeIdentifier:(NSString *)localeIdentifier
++ (NSString *)stringFromDate:(NSDate *)date withDateFormat:(NSString *)dateFormat localeIdentifier:(NSString *)localeIdentifier
+{
+    return
+    [[HKPDateFormatter sharedInstance] hpk_stringFromDate:date withDateFormat:dateFormat localeIdentifier:localeIdentifier];
+}
+
++ (NSDate *)dateFromString:(NSString *)string withDateFormat:(NSString *)dateFormat localeIdentifier:(NSString *)localeIdentifier
+{
+    return
+    [[HKPDateFormatter sharedInstance] hpk_dateFromString:string withDateFormat:dateFormat localeIdentifier:localeIdentifier];
+}
+
++ (NSString *)relativeStringFromDate:(NSDate *)date withDateFormat:(NSString *)dateFormat
+                       dayFormatType:(HKPDFRelativeDayFormatType)dayFormatType localeIdentifier:(NSString *)localeIdentifier
+                uppercaseRelativeDay:(BOOL)uppercaseRelativeDay
+{
+    return
+    [[HKPDateFormatter sharedInstance]
+     hpk_relativeStringFromDate:date withDateFormat:dateFormat dayFormatType:dayFormatType localeIdentifier:localeIdentifier
+     uppercaseRelativeDay:uppercaseRelativeDay];
+}
+
++ (NSDate *)fastDateFromString:(NSString *)string withStrftimeFormat:(NSString *)format
+{
+    return
+    [[HKPDateFormatter sharedInstance] hpk_fastDateFromString:string withStrftimeFormat:format];
+}
+
++ (NSDate *)dateFromISO8601FormattedString:(NSString *)formattedString
+{
+    return
+    [[HKPDateFormatter sharedInstance] hpk_dateFromString:formattedString withDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"
+                                         localeIdentifier:nil];
+}
+
++ (NSString *)ISO8601FormattedStringFromDate:(NSDate *)date
+{
+    return
+    [[HKPDateFormatter sharedInstance] hpk_stringFromDate:date withDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"
+                                         localeIdentifier:nil];
+}
+
+#pragma mark - Private methods
+
+- (NSString *)hpk_stringFromDate:(NSDate *)date withDateFormat:(NSString *)dateFormat localeIdentifier:(NSString *)localeIdentifier
 {
     [self.dateFormatter setDateFormat:dateFormat];
-    NSLocale *locale = [self cacheLocaleIfNeeded:localeIdentifier];
-    [self setupLocaleIfNeeded:locale dateRelativeFormatter:NO];
+    NSLocale *locale = [self hpk_cacheLocaleIfNeeded:localeIdentifier];
+    [self hpk_setupLocaleIfNeeded:locale dateRelativeFormatter:NO];
     return [self.dateFormatter stringFromDate:date];
 }
 
-- (NSDate *)dateFromString:(NSString *)string withDateFormat:(NSString *)dateFormat localeIdentifier:(NSString *)localeIdentifier
+- (NSDate *)hpk_dateFromString:(NSString *)string withDateFormat:(NSString *)dateFormat localeIdentifier:(NSString *)localeIdentifier
 {
+    // check whether the sting has the timezone or not
+    NSError *error = nil;
+    NSDataDetector *detector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeDate error:&error];
+    
+    NSArray *matches = [detector matchesInString:string options:NSMatchingReportCompletion range:NSMakeRange(0, string.length)];
+    
+    BOOL shouldBeUniversalCoordinatedTime;
+    for (NSTextCheckingResult *match in matches) {
+        shouldBeUniversalCoordinatedTime = !match.timeZone;
+    }
+    
+    if (shouldBeUniversalCoordinatedTime) {
+        [self.dateFormatter setTimeZone:[NSTimeZone timeZoneWithName:@"UTC"]];
+    }
+    
     [self.dateFormatter setDateFormat:dateFormat];
-    NSLocale *locale = [self cacheLocaleIfNeeded:localeIdentifier];
-    [self setupLocaleIfNeeded:locale dateRelativeFormatter:NO];
-    return [self.dateFormatter dateFromString:string];
+    NSLocale *locale = [self hpk_cacheLocaleIfNeeded:localeIdentifier];
+    [self hpk_setupLocaleIfNeeded:locale dateRelativeFormatter:NO];
+    NSDate *date = [self.dateFormatter dateFromString:string];
+    
+    // restore system timezone
+    if (shouldBeUniversalCoordinatedTime) {
+         [self.dateFormatter setTimeZone:[NSTimeZone systemTimeZone]];
+    }
+    
+    return date;
 }
 
-- (NSString *)relativeStringFromDate:(NSDate *)date
+- (NSString *)hpk_relativeStringFromDate:(NSDate *)date
                       withDateFormat:(NSString *)dateFormat
                        dayFormatType:(HKPDFRelativeDayFormatType)dayFormatType
                     localeIdentifier:(NSString *)localeIdentifier
                 uppercaseRelativeDay:(BOOL)uppercaseRelativeDay
 {
-    NSLocale *locale = [self cacheLocaleIfNeeded:localeIdentifier];
-    [self setupLocaleIfNeeded:locale dateRelativeFormatter:YES];
+    NSLocale *locale = [self hpk_cacheLocaleIfNeeded:localeIdentifier];
+    [self hpk_setupLocaleIfNeeded:locale dateRelativeFormatter:YES];
     [self.dateFormatter setDateStyle:NSDateFormatterShortStyle];
     
     NSString *relativeDateFormat = (dayFormatType == HKPDFRelativeDayFormatTypeLong) ? @"EEEE" : @"EE";
-    NSString *relativeString = [self relativeStringFromDate:date dateFormat:relativeDateFormat
+    NSString *relativeString = [self hpk_relativeStringFromDate:date dateFormat:relativeDateFormat
                                        uppercaseRelativeDay:uppercaseRelativeDay];
     
-    return [NSString stringWithFormat:@"%@ %@", relativeString, [self stringFromDate:date withDateFormat:dateFormat localeIdentifier:localeIdentifier]];
+    return [NSString stringWithFormat:@"%@ %@", relativeString, [self hpk_stringFromDate:date withDateFormat:dateFormat localeIdentifier:localeIdentifier]];
 }
 
-- (NSString *)relativeStringFromDate:(NSDate *)date dateFormat:(NSString *)dateFormat
+- (NSString *)hpk_relativeStringFromDate:(NSDate *)date dateFormat:(NSString *)dateFormat
                 uppercaseRelativeDay:(BOOL)relativeDay
 {
     NSString *relativeString = [self.dateRelativeFormatter stringFromDate:date];
@@ -109,7 +175,7 @@ static NSMutableDictionary const *_sharedInstances;
     return relativeString;
 }
 
-- (NSLocale *)cacheLocaleIfNeeded:(NSString *)localeIdentifier
+- (NSLocale *)hpk_cacheLocaleIfNeeded:(NSString *)localeIdentifier
 {
     
     static NSHashTable *availableLocaleIdentifier;
@@ -135,14 +201,14 @@ static NSMutableDictionary const *_sharedInstances;
     return locale;
 }
 
-- (void)setupLocaleIfNeeded:(NSLocale *)locale dateRelativeFormatter:(BOOL)enableRelativeFormatter
+- (void)hpk_setupLocaleIfNeeded:(NSLocale *)locale dateRelativeFormatter:(BOOL)enableRelativeFormatter
 {
     if(self.dateFormatter.locale != locale) {
         [self.dateFormatter setLocale:locale];
     }
 }
 
-- (NSDate *)fastDateFromString:(NSString *)string withStrftimeFormat:(NSString *)format
+- (NSDate *)hpk_fastDateFromString:(NSString *)string withStrftimeFormat:(NSString *)format
 {
     if (!string.length) {
         return nil;

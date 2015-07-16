@@ -96,31 +96,6 @@ describe(@"Date formatter", ^{
         });
     });
     
-    context(@"precached locale dictionary", ^{
-        
-        NSDate __block *now;
-        
-        beforeAll(^{
-            now = [NSDate date];
-        });
-        
-        context(@"single thread", ^{
-            it(@"should contain 2 precached locales", ^{
-                [[HKPDateFormatter sharedInstance] stringFromDate:now withDateFormat:@"HH:mm:ss"
-                                                 localeIdentifier:@"en_US"];
-                [[mainDateFormatter.localeDictionary should] haveCountOf:2];
-            });
-            
-            it(@"should contain 3 precached locales", ^{
-                [[HKPDateFormatter sharedInstance] stringFromDate:now withDateFormat: @"HH:mm:ss"
-                                                 localeIdentifier:@"en_GB"];
-                [[mainDateFormatter.localeDictionary should] haveCountOf:3];
-            });
-        });
-        
-        
-    });
-    
     
     context(@"conversion", ^{
         
@@ -142,7 +117,7 @@ describe(@"Date formatter", ^{
             context(@"single thread", ^{
                 
                 it(@"should be equal to result of NSDateFormatter", ^{
-                    NSString *string = [[HKPDateFormatter sharedInstance]
+                    NSString *string = [HKPDateFormatter
                                         stringFromDate:[NSDate date]
                                         withDateFormat:testDateFormat
                                         localeIdentifier:@"en_US"];
@@ -155,14 +130,14 @@ describe(@"Date formatter", ^{
                 
                 context(@"wrong format", ^{
                     it(@"should return an empty string ", ^{
-                        NSString *string = [[HKPDateFormatter sharedInstance]
+                        NSString *string = [HKPDateFormatter
                                             stringFromDate:[NSDate date] withDateFormat:kUndefinedDateFormat
                                             localeIdentifier:@"en_US"];
                         [[string should] haveLengthOf:0];
                     });
                     
                     it(@"should return an empty string", ^{
-                        NSString *string = [[HKPDateFormatter sharedInstance]
+                        NSString *string = [HKPDateFormatter
                                             stringFromDate:[NSDate date] withDateFormat:kUnknownDateFormat
                                             localeIdentifier:@"en_US"];
                         [[string should] haveLengthOfAtLeast:0];
@@ -171,14 +146,14 @@ describe(@"Date formatter", ^{
                 
                 context(@"wrong locale", ^{
                     it(@"should return a non empty string", ^{
-                        NSString *string = [[HKPDateFormatter sharedInstance]
+                        NSString *string = [HKPDateFormatter
                                             stringFromDate:[NSDate date] withDateFormat:testDateFormat
                                             localeIdentifier:kUnknownDateFormat];
                         [[string should] haveLengthOfAtLeast:1];
                     });
                     
                     it(@"should return a string with default locale", ^{
-                        NSString *string = [[HKPDateFormatter sharedInstance]
+                        NSString *string = [HKPDateFormatter
                                             stringFromDate:[NSDate date] withDateFormat:testDateFormat
                                             localeIdentifier:kUnknownDateFormat];
                         dateFormatter.dateFormat = testDateFormat;
@@ -188,7 +163,7 @@ describe(@"Date formatter", ^{
                     });
                     
                     it(@"should return a non empty string", ^{
-                        NSString *string = [[HKPDateFormatter sharedInstance]
+                        NSString *string = [HKPDateFormatter
                                             stringFromDate:[NSDate date] withDateFormat:testDateFormat
                                             localeIdentifier:kUndefinedLocaleIdentifier];
                         [[string should] haveLengthOfAtLeast:1];
@@ -202,17 +177,17 @@ describe(@"Date formatter", ^{
                     NSString __block *firstResult, *secondResult, *thirdResult;
                     
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        firstResult = [[HKPDateFormatter sharedInstance]
+                        firstResult = [HKPDateFormatter
                                        stringFromDate:now withDateFormat:testDateFormat localeIdentifier:@"en_US"];
                     });
                     
                     dispatch_async(firstBackgroundQueue, ^{
-                        secondResult = [[HKPDateFormatter sharedInstance]
+                        secondResult = [HKPDateFormatter
                                         stringFromDate:now withDateFormat:testDateFormat localeIdentifier:@"en_US"];
                     });
                     
                     dispatch_async(secondBackgroundQueue, ^{
-                        thirdResult = [[HKPDateFormatter sharedInstance]
+                        thirdResult = [HKPDateFormatter
                                        stringFromDate:now withDateFormat:testDateFormat localeIdentifier:@"en_US"];
                     });
                     
@@ -234,14 +209,14 @@ describe(@"Date formatter", ^{
 
             beforeAll(^{
                 perfectDay = @"11/12/13";
-                testDateFormat = @"dd/mm/yy";
+                testDateFormat = @"dd/MM/yy";
             });
             
             context(@"single thread", ^{
                 it(@"should be equal to result of NSDateFormatter", ^{
-                    dateFormatter.dateFormat = @"dd/mm/yy";
+                    dateFormatter.dateFormat = @"dd/MM/yy";
                     [dateFormatter dateFromString:perfectDay];
-                    NSDate *date = [[HKPDateFormatter sharedInstance]
+                    NSDate *date = [HKPDateFormatter
                                     dateFromString:perfectDay
                                     withDateFormat:testDateFormat
                                     localeIdentifier:@"en_US"];
@@ -253,7 +228,7 @@ describe(@"Date formatter", ^{
                 
                 context(@"wrong format", ^{
                     it(@"should return a nil date", ^{
-                        NSDate *date = [[HKPDateFormatter sharedInstance]
+                        NSDate *date = [HKPDateFormatter
                                         dateFromString:perfectDay
                                         withDateFormat: @"undefined format"
                                         localeIdentifier:@"en_US"];
@@ -261,7 +236,7 @@ describe(@"Date formatter", ^{
                     });
                     
                     it(@"should return a nil date", ^{
-                        NSDate *date = [[HKPDateFormatter sharedInstance]
+                        NSDate *date = [HKPDateFormatter
                                         dateFromString:perfectDay
                                         withDateFormat: @""
                                         localeIdentifier:@"en_US"];
@@ -271,7 +246,7 @@ describe(@"Date formatter", ^{
                 
                 context(@"wrong locale", ^{
                     it(@"should return a nil date", ^{
-                        NSDate *date = [[HKPDateFormatter sharedInstance]
+                        NSDate *date = [HKPDateFormatter
                                         dateFromString:perfectDay
                                         withDateFormat:testDateFormat
                                         localeIdentifier:kUnknownLocaleIdentifier];
@@ -279,7 +254,7 @@ describe(@"Date formatter", ^{
                     });
                     
                     it(@"should return a nil date", ^{
-                        NSDate *date = [[HKPDateFormatter sharedInstance]
+                        NSDate *date = [HKPDateFormatter
                                         dateFromString:perfectDay
                                         withDateFormat:testDateFormat
                                         localeIdentifier:kUndefinedLocaleIdentifier];
@@ -287,7 +262,7 @@ describe(@"Date formatter", ^{
                     });
                     
                     it(@"should return a date with default locale", ^{
-                        NSDate *date = [[HKPDateFormatter sharedInstance]
+                        NSDate *date = [HKPDateFormatter
                                         dateFromString:perfectDay
                                         withDateFormat:testDateFormat
                                         localeIdentifier:@"en_US"];
@@ -304,20 +279,20 @@ describe(@"Date formatter", ^{
                         NSDate __block *firstResult, *secondResult, *thirdResult;
                         
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            firstResult = [[HKPDateFormatter sharedInstance]
+                            firstResult = [HKPDateFormatter
                                            dateFromString:perfectDay
                                            withDateFormat:testDateFormat localeIdentifier:@"en_US"];
                         });
                         
                         dispatch_async(firstBackgroundQueue, ^{
-                            secondResult = [[HKPDateFormatter sharedInstance]
+                            secondResult = [HKPDateFormatter
                                             dateFromString:perfectDay
                                             withDateFormat:testDateFormat
                                             localeIdentifier:@"en_US"];
                         });
                         
                         dispatch_async(secondBackgroundQueue, ^{
-                            thirdResult = [[HKPDateFormatter sharedInstance]
+                            thirdResult = [HKPDateFormatter
                                            dateFromString:perfectDay
                                            withDateFormat:testDateFormat
                                            localeIdentifier:@"en_US"];

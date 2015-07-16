@@ -6,18 +6,11 @@ typedef NS_ENUM(NSInteger, HKPDFRelativeDayFormatType) {
     HKPDFRelativeDayFormatTypeLong,
 };
 
+
 /**
  This class wraps an NSDateFormatter into a reusable container.
  */
 @interface HKPDateFormatter : NSObject
-
-/**
- @brief The singleton instance
- 
- @returns Singleton instance of HPKDateFormatter
- @note it returns a singleton per thread, i.e., each thread has its private singleton which is not shared amongst threads
- */
-+ (HKPDateFormatter *)sharedInstance;
 
 /**
  @brief Builds a string from given date with format and locale.
@@ -27,7 +20,7 @@ typedef NS_ENUM(NSInteger, HKPDFRelativeDayFormatType) {
  @param localeIdentifier The locale to use when parsing date
  @returns A string representation of passed date
  */
-- (NSString *)stringFromDate:(NSDate *)date
++ (NSString *)stringFromDate:(NSDate *)date
               withDateFormat:(NSString *)dateFormat
             localeIdentifier:(NSString *)localeIdentifier;
 
@@ -45,7 +38,7 @@ typedef NS_ENUM(NSInteger, HKPDFRelativeDayFormatType) {
  @param uppercaseRelativeDay Returns uppercase string
  @returns A string representation of passed date
  */
-- (NSString *)relativeStringFromDate:(NSDate *)date
++ (NSString *)relativeStringFromDate:(NSDate *)date
                       withDateFormat:(NSString *)dateFormat
                        dayFormatType:(HKPDFRelativeDayFormatType)dayFormatType
                     localeIdentifier:(NSString *)localeIdentifier
@@ -59,7 +52,7 @@ typedef NS_ENUM(NSInteger, HKPDFRelativeDayFormatType) {
  @param localeIdentifier The locale to use when parsing date
  @returns A date built from passed string or nil.
  */
-- (NSDate *)dateFromString:(NSString *)string
++ (NSDate *)dateFromString:(NSString *)string
             withDateFormat:(NSString *)dateFormat
           localeIdentifier:(NSString *)localeIdentifier;
 
@@ -70,7 +63,15 @@ typedef NS_ENUM(NSInteger, HKPDFRelativeDayFormatType) {
  @param format The input date formatting string. See strftime(3) for syntax.
  @returns A date built from passed string or nil.
  */
-- (NSDate *)fastDateFromString:(NSString *)string withStrftimeFormat:(NSString *)format;
++ (NSDate *)fastDateFromString:(NSString *)string withStrftimeFormat:(NSString *)format;
+
+@end
+
+
+@interface HKPDateFormatter (ISOFormats)
+
++ (NSDate *)dateFromISO8601FormattedString:(NSString *)formattedString;
++ (NSString *)ISO8601FormattedStringFromDate:(NSDate *)date;
 
 @end
 
