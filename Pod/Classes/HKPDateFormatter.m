@@ -5,7 +5,9 @@
 #import <time.h>
 #import <xlocale.h>
 
-static NSMutableDictionary const *_sharedInstances;
+static NSHashTable const *_sharedInstances;
+static NSString * const singletonInstanceKey = @"dateFormatter";
+static NSMutableArray const *_threads;
 
 @interface HKPDateFormatter ()
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
@@ -27,6 +29,7 @@ static NSMutableDictionary const *_sharedInstances;
         self.localeDictionary = [NSMutableDictionary dictionary];
         
         [self precacheLocales];
+        
     }
     
     return self;
@@ -47,12 +50,13 @@ static NSMutableDictionary const *_sharedInstances;
 
 + (instancetype)sharedInstance
 {
-    static NSString * const singletonInstanceKey = @"dateFormatter";
     NSThread *currentThread = [NSThread currentThread];
     NSMutableDictionary *dictionary = [currentThread threadDictionary];
     
     if (!dictionary[singletonInstanceKey]) {
         dictionary[singletonInstanceKey] = [[HKPDateFormatter alloc] init];
+        [_sharedInstances addObject:dictionary[singletonInstanceKey]];
+        [_threads addObject:currentThread];
     }
     
     return dictionary[singletonInstanceKey];
@@ -224,6 +228,29 @@ static NSMutableDictionary const *_sharedInstances;
     t = mktime(&tm);
     
     return [NSDate dateWithTimeIntervalSince1970:t];
+}
+
+#pragma mark - Application Locale Change Notification Handler 
+
++ (void)load
+{
+    _threads = [NSMutableArray array];
+    _sharedInstances = [[NSHashTable alloc] initWithOptions:NSPointerFunctionsWeakMemory capacity:4];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(localeDidChange)
+                                                 name:NSCurrentLocaleDidChangeNotification
+                                               object:nil];
+}
+
++ (void)localeDidChange
+{
+    [_threads enumerateObjectsUsingBlock:^(NSThread *thread, NSUInteger idx, BOOL *stop) {
+        NSMutableDictionary *dictionary = [thread threadDictionary];
+        [dictionary removeObjectForKey:singletonInstanceKey];
+    }];
+    
+    [_threads removeAllObjects];
 }
 
 @end

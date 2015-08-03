@@ -9,7 +9,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "HPKDateFormatter"
-  s.version          = "0.1.0"
+  s.version          = "0.2.0"
   s.summary          = "An high perfomance, thread safe, efficient date formatter"
   s.description      = <<-DESC
 			The basic implementation wraps `NSDateFormatter` and avoid contiuous 
@@ -21,7 +21,7 @@ Pod::Spec.new do |s|
   s.license          = 'MIT'
   s.author           = { "Eriprando Pacces" => "eriprando.pacces@gmail.com" }
   s.source           = { :git => "https://github.com/epacces/HPKDateFormatter.git", :tag => s.version.to_s }
-#  s.social_media_url = 'https://twitter.com/epacces'
+  s.social_media_url = 'https://twitter.com/hepaKKes'
 
   s.platform     = :ios, '5.0'
   s.requires_arc = true
